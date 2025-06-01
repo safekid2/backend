@@ -78,14 +78,14 @@ const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
 
   // Set cookie options
+  // Create expiration date 30 days from now
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
   const options = {
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+    expires: new Date(Date.now() + thirtyDays),
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
   };
-
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true;
-  }
 
   // Set cookie and send response
   res.status(statusCode)

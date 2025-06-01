@@ -77,10 +77,9 @@ const sendTokenResponse = (user, statusCode, res) => {
   // Create token
   const token = user.getSignedJwtToken();
 
+  // Set cookie options
   const options = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-    ),
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
     httpOnly: true,
   };
 
@@ -88,8 +87,11 @@ const sendTokenResponse = (user, statusCode, res) => {
     options.secure = true;
   }
 
-  res.status(statusCode).cookie('token', token, options).json({
-    success: true,
-    token,
-  });
+  // Set cookie and send response
+  res.status(statusCode)
+    .cookie('token', token, options)
+    .json({
+      success: true,
+      token,
+    });
 };
